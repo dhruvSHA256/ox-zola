@@ -1,5 +1,4 @@
 ;;; ox-zola.el --- Description -*- lexical-binding: t; -*-
-(message "hi dhruv")
 ;;
 ;; Copyright (C) 2023 Giovanni Crisalfi
 ;;
@@ -191,7 +190,7 @@ INFO is a plist used as a communication channel."
                  (audio . ,(org-hugo--string-unquote (plist-get info :hugo-audio)))
                  (author . ,author-list)
                  (description . ,description)
-                 (date . ,(org-hugo--format-date :date info))
+                 (date . ,(or (org-entry-get (point) "DATE") (format-time-string "%Y-%m-%d")))
                  (publishDate . ,(org-hugo--format-date :hugo-publishdate info))
                  (expiryDate . ,(org-hugo--format-date :hugo-expirydate info))
                  (aliases . ,aliases)
@@ -205,7 +204,7 @@ INFO is a plist used as a communication channel."
                  (outputs . ,outputs)
                  (series . ,(org-hugo--delim-str-to-list (plist-get info :hugo-series)))
                  (slug . ,(plist-get info :hugo-slug))
-                 ;; (tags . ,tags)
+                 (tags . ,tags)
                  (categories . ,categories)
                  (type . ,(plist-get info :hugo-type))
                  (url . ,(plist-get info :hugo-url))
@@ -223,7 +222,7 @@ INFO is a plist used as a communication channel."
                           (cons 'logbook (plist-get info :logbook)))))
          ret)
 
-    ;; (message "[get fm DBG] tags: %s" tags)
+    (message "[get fm DBG] tags: %s" tags)
     ;; (message "dbg: hugo tags: %S" (plist-get info :hugo-tags))
     ;; (message "[get fm info DBG] %S" info)
     ;; (message "[get fm menu DBG] %S" menu-alist)
@@ -335,7 +334,8 @@ are \"toml\" and \"yaml\"."
                          (tags . ,(alist-get 'tags data))
                          (categories . ,(alist-get 'categories data))))
 
-      ;; (message "Taxonomies will be: %s" taxonomies)
+        ;; Find and update the value of tags as i dont want seperate tags
+      (setq my-alist (assq-delete-all 'tags data))
 
       ;; Replace taxonomies in data with actual taxonomies
       (setf (alist-get 'taxonomies data) taxonomies)
