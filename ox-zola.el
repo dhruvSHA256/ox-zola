@@ -1,4 +1,5 @@
 ;;; ox-zola.el --- Description -*- lexical-binding: t; -*-
+(message "hi dhruv")
 ;;
 ;; Copyright (C) 2023 Giovanni Crisalfi
 ;;
@@ -204,7 +205,7 @@ INFO is a plist used as a communication channel."
                  (outputs . ,outputs)
                  (series . ,(org-hugo--delim-str-to-list (plist-get info :hugo-series)))
                  (slug . ,(plist-get info :hugo-slug))
-                 (tags . ,tags)
+                 ;; (tags . ,tags)
                  (categories . ,categories)
                  (type . ,(plist-get info :hugo-type))
                  (url . ,(plist-get info :hugo-url))
@@ -347,7 +348,7 @@ are \"toml\" and \"yaml\"."
   "Define a fake Hugo backend to support Zola metadata."
   (org-export-define-derived-backend 'hugo 'blackfriday ; hugo < blackfriday < md < html
     :menu-entry
-    '(?H "Export to Hugo-compatible Markdown"
+    '(?H "Export to Dhruv Hugo-compatible Markdown"
            ((?H "Subtree or File to Md file            "
                 (lambda (a _s v _b)
                   (org-hugo-export-wim-to-md nil a v)))
@@ -419,7 +420,7 @@ are \"toml\" and \"yaml\"."
                        (:bibliography "BIBLIOGRAPHY" nil nil newline) ;Used in ox-hugo-pandoc-cite
                        (:html-container "HTML_CONTAINER" nil org-hugo-container-element)
                        (:html-container-class "HTML_CONTAINER_CLASS" nil "")
-    
+
                        ;; Front-matter variables
                        ;; https://gohugo.io/content-management/front-matter/#front-matter-variables
                        ;; aliases
@@ -552,7 +553,7 @@ are \"toml\" and \"yaml\"."
                               (let* ((raw-list (org-element-property :attr_shortcode special-block))
                                      (raw-str (mapconcat #'identity raw-list " ")))
                                 (org-string-nw-p raw-str))))
-        
+
                ;; Named arguments.
                (named-args (unless pos-args
                              (let* ((raw-list (org-element-property :attr_shortcode special-block))
@@ -562,7 +563,7 @@ are \"toml\" and \"yaml\"."
                                     (raw-str
                                      (mapconcat (lambda (x) (concat (car x) "=" (car (cdr x)) )) couples ", ")))
                                (org-string-nw-p raw-str))))
-        
+
                (sc-args (or pos-args named-args))
                (sc-args (if sc-args
                             (concat " " sc-args " ")
@@ -571,18 +572,18 @@ are \"toml\" and \"yaml\"."
                                 (cl-member block-type paired-shortcodes
                                            :test (lambda (b sc) ;`sc' would be an element from `paired-shortcodes'
                                                    (string-match-p (format sc-regexp b) sc)))))
-        
+
                (sc-begin (format "%s{%s %s(%s) %s}"
                                  trim-pre-tag "%" block-type sc-args "%"))
                (sc-end (format "{%s end %s}%s"
                                "%" "%" trim-post-tag)))
-        
+
           (message "[ox-zola-spl-blk DBG] attr-sc1: %s"
                    (org-element-property :attr_shortcode special-block))
           (message "[ox-zola-spl-blk DBG] attr-sc: %s" attr-sc)
           (message "[ox-zola-spl-blk DBG] pos-args: %s" pos-args)
           (message "[ox-zola-spl-blk DBG] named-args: %s" named-args)
-        
+
           (format "%s\n%s\n%s"
                   sc-begin contents sc-end))
         )
@@ -665,7 +666,7 @@ and rewrite link paths to make blogging more seamless."
                         (org-hugo--get-anchor destination info))))
           ;; Links to other Org elements like source blocks, tables,
           ;; paragraphs, standalone figures,  links, etc.
-          
+
           )))
      ((org-export-inline-image-p link org-html-inline-image-rules)
       ;; (message "[org-hugo-link DBG] processing an image: %s" desc)
